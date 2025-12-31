@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屏技惡魔 2019-2025 完整回顧 😈</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-sub: #b0b0b0;
+            --accent: #bb86fc;
+            --correct: #03dac6;
+            --wrong: #cf6679;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        h1 { font-size: 28px; margin-bottom: 10px; color: var(--accent); }
+        h2 { font-size: 16px; color: var(--text-sub); font-weight: normal; margin-bottom: 30px; }
+        .emoji-header { font-size: 60px; margin-bottom: 20px; animation: bounce 2s infinite; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #333;
+            color: white;
+            border: 2px solid #333;
+            border-radius: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover { background-color: #444; border-color: #555; }
+        .btn:active { transform: scale(0.98); }
+        .progress-bar {
+            width: 100%; height: 8px; background-color: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-fill { height: 100%; background-color: var(--accent); width: 0%; transition: width 0.3s ease; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--text-sub); font-size: 14px; }
+        .year-badge { background-color: var(--accent); color: black; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 14px; }
+        .question-text { font-size: 22px; font-weight: bold; margin-bottom: 30px; line-height: 1.4; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 10px; font-size: 16px; display: none; text-align: left; line-height: 1.5; }
+        .feedback.correct { background-color: rgba(3, 218, 198, 0.2); color: var(--correct); border: 1px solid var(--correct); }
+        .feedback.wrong { background-color: rgba(207, 102, 121, 0.2); color: var(--wrong); border: 1px solid var(--wrong); }
+        .next-btn { background-color: var(--accent); color: black; font-weight: bold; border: none; margin-top: 20px; display: none; }
+        .next-btn:hover { background-color: #a370db; }
+        .result-screen { display: none; }
+        .score-display { font-size: 64px; font-weight: bold; color: var(--accent); margin: 20px 0; }
+        .analysis-text { text-align: left; background-color: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 20px; line-height: 1.6; color: #ddd; max-height: 300px; overflow-y: auto; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="start-screen">
+        <div class="emoji-header">😈</div>
+        <h1>屏技惡魔 7 年總回顧</h1>
+        <h2>2019 - 2025 年<br>35 題地獄級考驗，測測你的忠誠度！</h2>
+        <button class="btn" onclick="startQuiz()" style="background-color: var(--accent); color: black; font-weight: bold;">開始測驗 🔥</button>
+    </div>
+
+    <div class="container" id="quiz-screen" style="display: none;">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        <div class="question-header">
+            <span class="year-badge" id="q-year">2019</span>
+            <span id="q-count">1 / 35</span>
+        </div>
+        <div class="question-text" id="q-text">題目載入中...</div>
+        <div id="options-container"></div>
+        <div class="feedback" id="feedback-area"></div>
+        <button class="btn next-btn" id="next-btn" onclick="nextQuestion()">下一題 ➜</button>
+    </div>
+
+    <div class="container result-screen" id="result-screen">
+        <div class="emoji-header">📊</div>
+        <h1>測驗結果</h1>
+        <div class="score-display" id="final-score">0</div>
+        <h3>稱號：<span id="rank-title" style="color: var(--accent);"></span></h3>
+        <div class="analysis-text" id="analysis-content"></div>
+        <button class="btn" onclick="location.reload()">重新測驗 🔄</button>
+    </div>
+
+    <script>
+        const questions = [
+            // 2019
+            { y: "2019", q: "創群當天，王振宇把相簿名稱改成了什麼？", o: ["屏技帥哥", "大雞雞", "惡魔降臨", "抽菸bad"], a: 1, c: "經典中的經典。" },
+            { y: "2019", q: "誰在半夜聞到房間有微妙的味道，懷疑有人抽煙？", o: ["昀澤", "王振宇", "鄭景琳", "陳泓廷"], a: 0, c: "昀澤：484又抽煙？" },
+            { y: "2019", q: "誰為了「大一英文」想喝大杯熱豆漿，還威脅不幫買？", o: ["鄭景琳", "王振宇", "陳泓廷", "路人甲"], a: 0, c: "鄭景琳：幹你娘 我請你吃宵夜都不是就對了。" },
+            { y: "2019", q: "誰說自己被世界遺忘了？", o: ["陳泓廷", "鄭景琳", "王振宇", "昀澤"], a: 2, c: "王振宇：我被世界遺忘了。" },
+            { y: "2019", q: "誰在群組突然發「吃雞雞」，結果嚇到鄭景琳？", o: ["陳泓廷", "王振宇", "昀澤", "學長"], a: 1, c: "鄭景琳：媽的我直接嚇到，差點沒尿出來。" },
+            
+            // 2020
+            { y: "2020", q: "誰說出了名言「小孩子才上班」？", o: ["鄭景琳", "昀澤", "陳泓廷", "王振宇"], a: 2, c: "陳泓廷：我兩點就下班了，小孩子才上班。" },
+            { y: "2020", q: "誰為了玩楓之谷，說要「玩到睡醒」，甚至把電腦帶回家？", o: ["陳泓廷", "鄭景琳", "昀澤", "王振宇"], a: 1, c: "鄭景琳：我決定把電腦帶回家，準備見證傳奇。" },
+            { y: "2020", q: "誰被老師說「聲音夠大聲、有左中右掃描」，被吐槽「他每個都馬說這個」？", o: ["陳泓廷", "王振宇", "某位同學", "鄭景琳"], a: 2, c: "其實是大家在討論某個人的報告表現。" },
+            { y: "2020", q: "陳泓廷半夜喊餓想吃宵夜，誰無情拒絕並表示「我嗑了兩個御飯糰」？", o: ["鄭景琳", "王振宇", "昀澤", "沒有人"], a: 0, c: "鄭景琳：我還好，我嗑了兩個御飯糰。" },
+            { y: "2020", q: "誰在工作時想「拖到下班」，自稱「摸魚大師」？", o: ["王振宇", "陳泓廷", "鄭景琳", "昀澤"], a: 1, c: "陳泓廷：我要拖到下班，爽。" },
+
+            // 2021
+            { y: "2021", q: "誰因為在家裡大叫一聲嚇到陳泓廷，結果是因為「蟑螂/蟲」？", o: ["昀澤", "王振宇", "鄭景琳", "路人"], a: 2, c: "鄭景琳：我是廢物，我是娘炮。（來自靈魂深淵的吶喊）" },
+            { y: "2021", q: "疫情三級警戒時，誰說「要得一起得，增加上榜率」？", o: ["陳泓廷", "鄭景琳", "昀澤", "王振宇"], a: 1, c: "這邏輯...不愧是屏技惡魔。" },
+            { y: "2021", q: "誰碾到水溝蓋差點倒車？", o: ["鄭景琳", "陳泓廷", "王振宇", "昀澤"], a: 1, c: "陳泓廷：還好我是兩隻腳騰空進來的。" },
+            { y: "2021", q: "誰質疑「元智博士」讀到 28 歲，問說「以後出來要幹嘛」？", o: ["陳泓廷", "昀澤", "鄭景琳", "王振宇"], a: 2, c: "鄭景琳：三小，讀到28歲欸。" },
+            { y: "2021", q: "誰因為「閩客文化」報告被老師打槍？", o: ["許睿哲", "王振宇", "陳泓廷", "昀澤"], a: 0, c: "花了 1500 外包 PPT 結果被老師嫌棄。" },
+
+            // 2022
+            { y: "2022", q: "誰幻想考上研究所去搖泰奶店員，還故意掉出交大學生證？", o: ["昀澤", "陳泓廷", "鄭景琳", "王振宇"], a: 2, c: "鄭景琳的幻想總是特別豐富。" },
+            { y: "2022", q: "誰在測試小考交白卷，結果助教還是有吐考卷回來？", o: ["陳泓廷", "鄭景琳", "昀澤", "王振宇"], a: 2, c: "昀澤：我交白卷，但他還是有吐考卷回來。" },
+            { y: "2022", q: "誰被懷疑「只會寫考古題」，新的題目都不會，被稱為「背背豬」？", o: ["小胖/話題人物", "鄭景琳", "陳泓廷", "昀澤"], a: 0, c: "鄭景琳吐槽某人根本只是死記答案。" },
+            { y: "2022", q: "誰分享了「瞬間沒聲音欸... 背景變天堂」的影片？", o: ["陳泓廷", "王振宇", "昀澤", "鄭景琳"], a: 3, c: "地獄梗愛好者。" },
+            { y: "2022", q: "誰問大家有沒有學到「轉移函數穩定度」，還貼了高科的題目？", o: ["昀澤", "鄭景琳", "陳泓廷", "王振宇"], a: 0, c: "昀澤：啊你們有那種問轉移函數有沒有穩定這種題目嗎？" },
+
+            // 2023
+            { y: "2023", q: "誰在小琉球跨年看煙火？", o: ["鄭景琳", "昀澤", "陳泓廷", "王振宇"], a: 2, c: "陳泓廷：辛苦了讀書人，小琉球第一手煙火。" },
+            { y: "2023", q: "誰工數考 43 分，還覺得自己電子學爛爆？", o: ["昀澤", "鄭景琳", "陳泓廷", "王振宇"], a: 1, c: "雖然 43 分好像算高？" },
+            { y: "2023", q: "誰去日本走到「足底筋要彈出來了」？", o: ["陳泓廷", "昀澤", "鄭景琳", "王振宇"], a: 2, c: "鄭景琳：日本真的走爆，我一天走3萬步。" },
+            { y: "2023", q: "誰提到「張順恩不敢進去」當兵，還偷跑去拍照？", o: ["陳泓廷", "昀澤", "鄭景琳", "胖子"], a: 3, c: "陳泓廷轉述胖子說的話。" },
+            { y: "2023", q: "誰被問有沒有台積電的股票內線消息？", o: ["陳泓廷的老師/學長", "鄭景琳", "昀澤", "王振宇"], a: 0, c: "昀澤：如果有股票的內線消息那就更好了。" },
+
+            // 2024
+            { y: "2024", q: "誰許願「希望諸位碩士能不要太忙... 快樂拿錢快樂畢業」？", o: ["鄭景琳", "陳泓廷", "昀澤", "王振宇"], a: 2, c: "昀澤的新年願望。" },
+            { y: "2024", q: "誰因日本地震說「這我會哭出來」？", o: ["陳泓廷", "昀澤", "鄭景琳", "王振宇"], a: 2, c: "鄭景琳：喔幹 這我會哭出來。" },
+            { y: "2024", q: "誰一直玩楓之谷活動打錯密碼 `asdf1234`？", o: ["陳泓廷", "昀澤", "鄭景琳", "王振宇"], a: 2, c: "鄭景琳：幹 爛遊戲。" },
+            { y: "2024", q: "誰覺得路易莎越來越不需要離開，甚至懷疑路易莎要賣飯了？", o: ["陳泓廷", "昀澤", "鄭景琳", "王振宇"], a: 2, c: "鄭景琳：越來越不需要離開路易莎了。" },
+            { y: "2024", q: "誰說有人可以一天練一隻楓之谷到 140 等？", o: ["陳泓廷", "昀澤", "鄭景琳", "王振宇"], a: 0, c: "陳泓廷分享職業選手的練等速度。" },
+
+            // 2025
+            { y: "2025", q: "誰感嘆別人的感情是「戀愛辦家家酒」？", o: ["昀澤", "鄭景琳", "陳泓廷", "王振宇"], a: 2, c: "陳泓廷的精闢點評。" },
+            { y: "2025", q: "誰去日本回來後說「我還是愛日本... 像在看港片」？", o: ["昀澤", "鄭景琳", "王振宇", "陳泓廷"], a: 3, c: "陳泓廷：我有日本濾鏡。" },
+            { y: "2025", q: "大家在討論台積電「副處長」的年薪可能有？", o: ["三百萬", "五百萬", "一千萬", "一億"], a: 2, c: "鄭景琳：副處長年薪應該有千萬。" },
+            { y: "2025", q: "誰覺得嚴寬宏講話太客氣（用「您」），讓人壓力很大？", o: ["陳泓廷", "鄭景琳", "昀澤", "王振宇"], a: 2, c: "昀澤：有必要嗎 我感覺壓力好大。" },
+            { y: "2025", q: "2025 年 4 月，大家在討論楓之谷的什麼伺服器？", o: ["經典懷舊服", "琉德", "艾麗亞", "普力特"], a: 0, c: "懷舊服 (Maplestory Worlds)。" }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('q-year').innerText = q.y;
+            document.getElementById('q-count').innerText = `${currentQ + 1} / ${questions.length}`;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('progress').style.width = `${((currentQ) / questions.length) * 100}%`;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.o.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('feedback-area').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const q = questions[currentQ];
+            const feedback = document.getElementById('feedback-area');
+            const allBtns = document.querySelectorAll('#options-container .btn');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selectedIndex === q.a) {
+                score++;
+                btnElement.style.backgroundColor = 'var(--correct)';
+                btnElement.style.borderColor = 'var(--correct)';
+                btnElement.style.color = 'black';
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `<strong>✅ 正確！</strong><br>${q.c}`;
+            } else {
+                btnElement.style.backgroundColor = 'var(--wrong)';
+                btnElement.style.borderColor = 'var(--wrong)';
+                allBtns[q.a].style.backgroundColor = 'var(--correct)';
+                allBtns[q.a].style.color = 'black';
+                feedback.className = 'feedback wrong';
+                feedback.innerHTML = `<strong>❌ 答錯囉！</strong><br>正解是：${q.o[q.a]}<br>${q.c}`;
+            }
+            
+            feedback.style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            
+            const finalScore = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').innerText = `${finalScore} 分`;
+
+            let title = "";
+            let analysis = "";
+
+            if (finalScore >= 90) {
+                title = "😈 傳說中的惡魔本人";
+                analysis = "太誇張了！連那麼細節的年份你都記得？你根本就是這個群組的歷史學家，或者是你一直在暗戀大家？";
+            } else if (finalScore >= 70) {
+                title = "😎 核心幹部";
+                analysis = "很強！雖然有些年份的細節模糊了，但大部分的經典幹話你都沒忘記。";
+            } else if (finalScore >= 50) {
+                title = "🤔 普通朋友";
+                analysis = "還行啦，可能那幾年你剛好比較忙，或者是被楓之谷洗腦了忘記了現實生活。";
+            } else {
+                title = "🤡 塑膠人";
+                analysis = "這分數...你是誰？是剛加入的嗎？還是你都把群組關靜音？2026 年請多出來刷存在感！";
+            }
+
+            document.getElementById('rank-title').innerText = title;
+            document.getElementById('analysis-content').innerText = analysis;
+        }
+    </script>
+</body>
+</html>

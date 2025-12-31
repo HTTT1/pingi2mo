@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>選擇測驗 | 屏技惡魔</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --fg:#e0e0e0;
+      --accent:#bb86fc;
+      --secondary:#03dac6;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Courier New', Courier, monospace;
+      background:var(--bg);
+      color:var(--fg);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+    }
+    .grid-bg{
+      position:absolute;inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size:30px 30px;
+      z-index:-1;
+    }
+    .wrap{
+      width:min(720px, 100%);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:24px;
+      background:rgba(20,20,20,0.72);
+      box-shadow:0 10px 30px rgba(0,0,0,0.55);
+      text-align:center;
+    }
+    h1{color:var(--accent);font-size:1.8rem;margin-bottom:8px}
+    p{opacity:0.85;margin-bottom:18px}
+    .btns{display:flex;flex-direction:column;gap:12px}
+    a.btn{
+      display:block;
+      padding:14px 18px;
+      border-radius:999px;
+      border:2px solid var(--accent);
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:bold;
+      transition:all .2s ease;
+    }
+    a.btn:hover{
+      background:var(--accent);
+      color:#000;
+      transform:translateY(-1px);
+      box-shadow:0 0 18px rgba(187,134,252,0.45);
+    }
+    a.sub{border-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.85)}
+    a.sub:hover{background:rgba(255,255,255,0.10);color:#fff;transform:none;box-shadow:none}
+    .hint{margin-top:14px;font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.5}
+    code{color:var(--secondary)}
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <h1>選擇測驗</h1>
+    <p>請選擇要進入的測驗。</p>
+
+    <div class="btns">
+      <a class="btn" href="20251231_Annual%20Review%20-%20Quiz.html">測驗 1：年度回顧 ➜</a>
+      <a class="btn" href="pingi_quiz_gemini.html">測驗 2：7 年總回顧 ➜</a>
+      <a class="btn sub" href="index.html">← 回封面</a>
+    </div>
+
+    <div class="hint">
+      小提醒：<code>測驗1</code>檔名含空白，網址必須用 <code>%20</code>，不然容易 404。
+    </div>
+  </div>
+</body>
+</html>

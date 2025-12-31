@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>20251231年度回顧 🎉📱</title>
+  <style>
+    :root{
+      --bg:#f5f6f8;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --red:#ef4444;
+      --good-bg:#dcfce7;
+      --bad-bg:#fee2e2;
+      --opt-bg:#f3f4f6;
+      --shadow:0 12px 30px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Microsoft JhengHei", Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.45;
+    }
+    .wrap{
+      max-width:760px;
+      margin:0 auto;
+      padding:18px 14px 28px;
+    }
+    header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      margin:6px 0 12px;
+    }
+    .title{
+      font-weight:800;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:2px;
+    }
+    .topbar{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px 12px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      box-shadow: var(--shadow);
+    }
+    .progress-col{flex:1; min-width:0}
+    .progress-row{display:flex; align-items:center; gap:10px}
+    .progress-track{
+      position:relative;
+      height:10px;
+      border-radius:999px;
+      background:#dbeafe;
+      overflow:hidden;
+      flex:1;
+    }
+    .progress-fill{
+      position:absolute; inset:0;
+      width:0%;
+      background:var(--blue);
+      border-radius:999px;
+      transition:width .25s ease;
+    }
+    .progress-dot{
+      position:absolute;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:18px; height:18px;
+      border-radius:999px;
+      background:var(--blue);
+      box-shadow:0 8px 18px rgba(37,99,235,.25);
+      left:0%;
+      transition:left .25s ease;
+    }
+    .pills{display:flex; gap:8px; align-items:center; white-space:nowrap}
+    .pill{
+      padding:7px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:flex; align-items:center; gap:7px;
+    }
+    .pill.good{background:var(--good-bg); border-color:#bbf7d0; color:#14532d}
+    .pill.bad{background:var(--bad-bg); border-color:#fecaca; color:#7f1d1d}
+    .pill .num{font-size:13px}
+    .card{
+      margin-top:12px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-head{
+      padding:16px 16px 8px;
+    }
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:650;
+    }
+    .tag{
+      padding:4px 10px;
+      border-radius:999px;
+      background:#eff6ff;
+      color:#1d4ed8;
+      border:1px solid #dbeafe;
+      font-weight:800;
+    }
+    .q{
+      font-size:18px;
+      font-weight:800;
+      margin:0 0 4px;
+    }
+    .opts{padding:6px 12px 14px; display:flex; flex-direction:column; gap:10px}
+    .opt{
+      width:100%;
+      text-align:left;
+      border:1px solid var(--line);
+      background:var(--opt-bg);
+      border-radius:14px;
+      padding:14px 14px;
+      font-size:16px;
+      font-weight:750;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      cursor:pointer;
+      transition:transform .03s ease, border-color .2s ease, background .2s ease;
+    }
+    .opt:active{transform:scale(.995)}
+    .opt[disabled]{cursor:default; opacity:1}
+    .opt .label{
+      width:26px; flex:0 0 26px;
+      height:26px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#e5e7eb;
+      color:#111827;
+      font-weight:900;
+      margin-top:1px;
+    }
+    .opt.correct{background:var(--good-bg); border-color:#86efac}
+    .opt.wrong{background:var(--bad-bg); border-color:#fca5a5}
+    .opt.dim{opacity:.62}
+    .feedback{
+      margin:0 16px 14px;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      display:none;
+    }
+    .feedback.good{background:var(--good-bg); border-color:#bbf7d0}
+    .feedback.bad{background:var(--bad-bg); border-color:#fecaca}
+    .fb-title{font-weight:900; margin-bottom:6px}
+    .fb-text{color:#111827; font-weight:650}
+    .nav{
+      display:flex;
+      gap:10px;
+      padding:14px 14px 16px;
+      border-top:1px solid var(--line);
+      background:linear-gradient(#fff, #fbfbfd);
+    }
+    .btn{
+      flex:1;
+      border-radius:999px;
+      padding:13px 14px;
+      font-size:15px;
+      font-weight:850;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+    }
+    .btn.primary{background:var(--blue); border-color:var(--blue); color:#fff}
+    .btn:disabled{opacity:.55; cursor:default}
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:16px;
+      transform:translateX(-50%);
+      background:#111827;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:750;
+      font-size:13px;
+      box-shadow:0 14px 34px rgba(0,0,0,.22);
+      display:none;
+      z-index:50;
+      max-width:90vw;
+      text-align:center;
+    }
+    .result{
+      margin-top:12px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      display:none;
+    }
+    .result h2{margin:0 0 6px; font-size:20px}
+    .result .big{font-weight:900; font-size:34px; margin:4px 0 10px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    .mini{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+    .mini .y{font-weight:900}
+    .mini .s{color:var(--muted); font-weight:700; margin-top:4px}
+    @media (max-width:420px){
+      .title{font-size:20px}
+      .q{font-size:17px}
+      .opt{font-size:15px}
+      .grid{grid-template-columns: 1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title">20251231年度回顧 🎉📱🧠</div>
+        <div class="subtitle">從 2021 到 2025，把聊天的回憶做成一份小測驗</div>
+      </div>
+    </header>
+
+    <div class="topbar" id="topbar">
+      <div class="progress-col">
+        <div class="progress-row">
+          <div class="progress-track" aria-label="progress">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-dot" id="progressDot"></div>
+          </div>
+          <div style="font-weight:900; color:#111827; min-width:64px; text-align:right" id="progressText">0/0</div>
+        </div>
+      </div>
+      <div class="pills">
+        <div class="pill bad" title="答錯"><span>✗</span><span class="num" id="wrongCount">0</span></div>
+        <div class="pill good" title="答對"><span>✓</span><span class="num" id="rightCount">0</span></div>
+      </div>
+    </div>
+
+    <div class="card" id="card">
+      <div class="card-head">
+        <div class="meta">
+          <div><span id="qIndex">第 1 題</span> · <span id="qTotal">共 0 題</span></div>
+          <div class="tag" id="yearTag">2021</div>
+        </div>
+        <div class="q" id="qText"></div>
+      </div>
+
+      <div class="opts" id="opts"></div>
+
+      <div class="feedback" id="feedback">
+        <div class="fb-title" id="fbTitle"></div>
+        <div class="fb-text" id="fbText"></div>
+      </div>
+
+      <div class="nav">
+        <button class="btn" id="btnBack">返回</button>
+        <button class="btn primary" id="btnNext">下一題</button>
+      </div>
+    </div>
+
+    <div class="result" id="result">
+      <h2>完成啦 🎊</h2>
+      <div class="big" id="finalScore"></div>
+      <div style="color:var(--muted); font-weight:700" id="finalDetail"></div>
+
+      <div class="grid" id="yearBreakdown"></div>
+
+      <div style="margin-top:14px; display:flex; gap:10px">
+        <button class="btn" id="btnReview">回到題目</button>
+        <button class="btn primary" id="btnRestart">再玩一次</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">請先作答再前往下一題</div>
+
+  <script type="application/json" id="quiz-data">[{"id": 1, "year": 2021, "q": "2021｜這一年誰最常在群組出聲？", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 2, "explain": "統計 2021 年訊息數：昀澤 7,142、王振宇 1,213、陳泓廷 8,149、鄭景琳 6,819。"}, {"id": 2, "year": 2021, "q": "2021｜聊天最容易爆量的時段大約落在幾點？⏰", "choices": ["凌晨 12 點左右", "下午 1 點左右", "晚上 6 點左右", "晚上 11 點左右"], "correct": 3, "explain": "2021 年訊息量最高峰落在 23 點（晚上 11 點左右）。"}, {"id": 3, "year": 2021, "q": "2021｜夜深了，下面哪個詞在這一年特別常被提到？🌙", "choices": ["機器學習", "確診", "宵夜", "路易莎"], "correct": 2, "explain": "2021 年含「宵夜」的訊息共有 48 則，最早可追到 2021-01-03。"}, {"id": 4, "year": 2021, "q": "2021｜這句話是誰說的？「來不及了 原本要問你要不要吃宵夜」", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 2, "explain": "出自 2021-03-20。"}, {"id": 5, "year": 2021, "q": "2021｜那年常被點名的外食之一是？🍜", "choices": ["麻辣燙", "確診", "機器學習", "路易莎"], "correct": 0, "explain": "2021 年含「麻辣燙」的訊息共有 15 則，最早可追到 2021-01-04。"}, {"id": 6, "year": 2022, "q": "2022｜這一年誰最常在群組出聲？", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 3, "explain": "統計 2022 年訊息數：昀澤 5,033、王振宇 254、陳泓廷 6,059、鄭景琳 6,553。"}, {"id": 7, "year": 2022, "q": "2022｜聊天最容易爆量的時段大約落在幾點？⏰", "choices": ["下午 1 點左右", "晚上 8 點左右", "凌晨 12 點左右", "晚上 6 點左右"], "correct": 2, "explain": "2022 年訊息量最高峰落在 00 點（凌晨 12 點左右）。"}, {"id": 8, "year": 2022, "q": "2022｜那年常被約去/提到的地點是哪個？📍", "choices": ["麻辣燙", "宵夜", "路易莎", "台積"], "correct": 2, "explain": "2022 年含「路易莎」的訊息共有 68 則，最早可追到 2022-04-04。"}, {"id": 9, "year": 2022, "q": "2022｜這句話是誰說的？「但我吃完午餐應該就要走了 所以就看你還要不要繼續待在路易莎」", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 3, "explain": "出自 2022-10-07。"}, {"id": 10, "year": 2022, "q": "2022｜那年也常聊到的防疫關鍵字是？😷", "choices": ["麻辣燙", "台積", "宵夜", "確診"], "correct": 3, "explain": "2022 年含「確診」的訊息共有 44 則，最早可追到 2022-01-25。"}, {"id": 11, "year": 2023, "q": "2023｜這一年誰最常在群組出聲？", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 3, "explain": "統計 2023 年訊息數：昀澤 3,927、王振宇 117、陳泓廷 3,351、鄭景琳 4,002。"}, {"id": 12, "year": 2023, "q": "2023｜聊天最容易爆量的時段大約落在幾點？⏰", "choices": ["晚上 8 點左右", "下午 1 點左右", "凌晨 12 點左右", "晚上 6 點左右"], "correct": 1, "explain": "2023 年訊息量最高峰落在 13 點（下午 1 點左右）。"}, {"id": 13, "year": 2023, "q": "2023｜那年在課業/技術討論裡很常出現的關鍵字是？📚", "choices": ["機器學習", "實驗室", "台積", "楓之谷"], "correct": 0, "explain": "2023 年含「機器學習」的訊息共有 24 則，最早可追到 2023-03-06。"}, {"id": 14, "year": 2023, "q": "2023｜這句話是誰說的？「他跟他同屆的處的不太好然後現在跟機器學習的東西跟的很累」", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 0, "explain": "出自 2023-08-21。"}, {"id": 15, "year": 2023, "q": "2023｜那年大家常提到的科目之一是？🧠", "choices": ["確診", "電磁學", "無塵室", "楓之谷"], "correct": 1, "explain": "2023 年含「電磁學」的訊息共有 21 則，最早可追到 2023-01-09。"}, {"id": 16, "year": 2024, "q": "2024｜這一年誰最常在群組出聲？", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 2, "explain": "統計 2024 年訊息數：昀澤 2,911、王振宇 128、陳泓廷 5,460、鄭景琳 4,262。"}, {"id": 17, "year": 2024, "q": "2024｜聊天最容易爆量的時段大約落在幾點？⏰", "choices": ["凌晨 12 點左右", "晚上 6 點左右", "下午 1 點左右", "晚上 8 點左右"], "correct": 1, "explain": "2024 年訊息量最高峰落在 18 點（晚上 6 點左右）。"}, {"id": 18, "year": 2024, "q": "2024｜那年聊到工作/環境時常出現的關鍵詞是？🧪", "choices": ["實驗室", "無塵室", "台積", "宵夜"], "correct": 1, "explain": "2024 年含「無塵室」的訊息共有 21 則，最早可追到 2024-01-08。"}, {"id": 19, "year": 2024, "q": "2024｜這句話是誰說的？「確實 我以為台積就跟我現在很像 不是無塵室就是在無塵室的路上」", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 3, "explain": "出自 2024-07-02。"}, {"id": 20, "year": 2024, "q": "2024｜那年最常被提到的遊戲是哪個？🎮", "choices": ["機器學習", "楓之谷", "實驗室", "電磁學"], "correct": 1, "explain": "2024 年含「楓之谷」的訊息共有 40 則，最早可追到 2024-02-02。"}, {"id": 21, "year": 2025, "q": "2025｜這一年誰最常在群組出聲？", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 2, "explain": "統計 2025 年訊息數：昀澤 2,271、王振宇 80、陳泓廷 3,313、鄭景琳 2,323。"}, {"id": 22, "year": 2025, "q": "2025｜聊天最容易爆量的時段大約落在幾點？⏰", "choices": ["晚上 6 點左右", "凌晨 12 點左右", "晚上 8 點左右", "下午 1 點左右"], "correct": 2, "explain": "2025 年訊息量最高峰落在 20 點（晚上 8 點左右）。"}, {"id": 23, "year": 2025, "q": "2025｜那年日常的主要舞台是？🧷", "choices": ["宵夜", "路易莎", "實驗室", "麻辣燙"], "correct": 2, "explain": "2025 年含「實驗室」的訊息共有 39 則，最早可追到 2025-01-04。"}, {"id": 24, "year": 2025, "q": "2025｜這句話是誰說的？「你是當天就寄信跟他說想要進他實驗室還是之後才寄」", "choices": ["昀澤", "王振宇", "陳泓廷", "鄭景琳"], "correct": 0, "explain": "出自 2025-11-10。"}, {"id": 25, "year": 2025, "q": "2025｜那年最常出現的公司關鍵字是？🏭", "choices": ["無塵室", "台積", "機器學習", "電磁學"], "correct": 1, "explain": "2025 年含「台積」的訊息共有 53 則，最早可追到 2025-01-15。"}]</script>
+  <script>
+    const QUIZ = JSON.parse(document.getElementById('quiz-data').textContent);
+    const N = QUIZ.length;
+
+    const el = (id) => document.getElementById(id);
+    const progressFill = el('progressFill');
+    const progressDot  = el('progressDot');
+    const progressText = el('progressText');
+    const rightCountEl = el('rightCount');
+    const wrongCountEl = el('wrongCount');
+
+    const qIndexEl = el('qIndex');
+    const qTotalEl = el('qTotal');
+    const yearTagEl = el('yearTag');
+    const qTextEl  = el('qText');
+    const optsEl   = el('opts');
+
+    const feedbackEl = el('feedback');
+    const fbTitleEl  = el('fbTitle');
+    const fbTextEl   = el('fbText');
+
+    const btnBack = el('btnBack');
+    const btnNext = el('btnNext');
+
+    const cardEl   = el('card');
+    const resultEl = el('result');
+
+    const toastEl = el('toast');
+
+    const STORAGE_KEY = "quiz_20251231_state_v1";
+
+    let state = {
+      i: 0,
+      answers: Array(N).fill(null),   // selected index
+      corrects: Array(N).fill(null),  // true/false
+    };
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const s = JSON.parse(raw);
+        if (!s || !Array.isArray(s.answers) || s.answers.length !== N) return;
+        state = s;
+      } catch (e) {}
+    }
+    function clearState() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    }
+
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.style.display = "block";
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toastEl.style.display = "none", 1200);
+    }
+
+    function score() {
+      let r=0, w=0;
+      for (let k=0;k<N;k++) {
+        if (state.corrects[k] === true) r++;
+        else if (state.corrects[k] === false) w++;
+      }
+      return {r,w};
+    }
+
+    function setProgress() {
+      const {r,w} = score();
+      rightCountEl.textContent = r;
+      wrongCountEl.textContent = w;
+
+      const done = state.answers.filter(v => v !== null).length;
+      const pct = N ? (done / N) * 100 : 0;
+      progressFill.style.width = pct + "%";
+      progressDot.style.left = pct + "%";
+      progressText.textContent = done + "/" + N;
+    }
+
+    function showFeedback(isCorrect, explain) {
+      feedbackEl.style.display = "block";
+      feedbackEl.classList.remove("good","bad");
+      feedbackEl.classList.add(isCorrect ? "good" : "bad");
+      fbTitleEl.textContent = isCorrect ? "✓ 沒錯！" : "✗ 再想想～";
+      fbTextEl.textContent = explain || "";
+    }
+
+    function hideFeedback() {
+      feedbackEl.style.display = "none";
+      feedbackEl.classList.remove("good","bad");
+      fbTitleEl.textContent = "";
+      fbTextEl.textContent = "";
+    }
+
+    function render() {
+      setProgress();
+      qTotalEl.textContent = "共 " + N + " 題";
+
+      const q = QUIZ[state.i];
+      qIndexEl.textContent = "第 " + (state.i + 1) + " 題";
+      yearTagEl.textContent = String(q.year);
+      qTextEl.textContent = q.q;
+
+      // nav buttons
+      btnBack.disabled = state.i === 0;
+      btnNext.textContent = (state.i === N - 1) ? "完成" : "下一題";
+
+      // options
+      optsEl.innerHTML = "";
+      const chosen = state.answers[state.i];
+      const alreadyAnswered = chosen !== null;
+
+      q.choices.forEach((text, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        btn.type = "button";
+        btn.disabled = alreadyAnswered;
+
+        const label = document.createElement("div");
+        label.className = "label";
+        label.textContent = String.fromCharCode(65 + idx);
+
+        const span = document.createElement("div");
+        span.style.flex = "1";
+        span.textContent = text;
+
+        btn.appendChild(label);
+        btn.appendChild(span);
+
+        // if answered, style
+        if (alreadyAnswered) {
+          const correctIdx = q.correct;
+          if (idx === correctIdx) btn.classList.add("correct");
+          else if (idx === chosen && chosen !== correctIdx) btn.classList.add("wrong");
+          else btn.classList.add("dim");
+        }
+
+        btn.addEventListener("click", () => {
+          if (state.answers[state.i] !== null) return;
+
+          state.answers[state.i] = idx;
+          const isCorrect = (idx === q.correct);
+          state.corrects[state.i] = isCorrect;
+          saveState();
+          render();
+          showFeedback(isCorrect, q.explain);
+        });
+
+        optsEl.appendChild(btn);
+      });
+
+      if (alreadyAnswered) {
+        showFeedback(state.corrects[state.i] === true, q.explain);
+      } else {
+        hideFeedback();
+      }
+
+      // completion screen?
+      const done = state.answers.every(v => v !== null);
+      if (done && state.i === N - 1 && alreadyAnswered) {
+        // allow finish button to open results
+        btnNext.textContent = "完成";
+      }
+    }
+
+    function showResult() {
+      const {r,w} = score();
+      cardEl.style.display = "none";
+      resultEl.style.display = "block";
+      el('finalScore').textContent = r + " / " + N;
+      el('finalDetail').textContent = "答對 " + r + " 題，答錯 " + w + " 題。";
+
+      // breakdown
+      const years = [...new Set(QUIZ.map(q => q.year))];
+      const wrap = el('yearBreakdown');
+      wrap.innerHTML = "";
+      years.forEach(y => {
+        const idxs = QUIZ.map((q, i) => [q, i]).filter(([q,i]) => q.year === y).map(([q,i]) => i);
+        let rr = 0, ww = 0;
+        idxs.forEach(i => {
+          if (state.corrects[i] === true) rr++;
+          else if (state.corrects[i] === false) ww++;
+        });
+        const box = document.createElement("div");
+        box.className = "mini";
+        box.innerHTML = `<div class="y">${y} 年</div>
+                         <div class="s">答對 ${rr} / ${idxs.length} · 答錯 ${ww}</div>`;
+        wrap.appendChild(box);
+      });
+    }
+
+    btnBack.addEventListener("click", () => {
+      if (state.i > 0) {
+        state.i--;
+        saveState();
+        render();
+      }
+    });
+
+    btnNext.addEventListener("click", () => {
+      if (state.answers[state.i] === null) {
+        toast("請先作答再前往下一題");
+        return;
+      }
+      if (state.i === N - 1) {
+        showResult();
+        return;
+      }
+      state.i++;
+      saveState();
+      render();
+    });
+
+    el('btnRestart').addEventListener("click", () => {
+      state = { i: 0, answers: Array(N).fill(null), corrects: Array(N).fill(null) };
+      clearState();
+      cardEl.style.display = "block";
+      resultEl.style.display = "none";
+      render();
+    });
+
+    el('btnReview').addEventListener("click", () => {
+      cardEl.style.display = "block";
+      resultEl.style.display = "none";
+      render();
+    });
+
+    // boot
+    loadState();
+    // if state.i out of range, reset
+    if (typeof state.i !== "number" || state.i < 0 || state.i >= N) {
+      state.i = 0;
+    }
+    render();
+  </script>
+</body>
+</html>
